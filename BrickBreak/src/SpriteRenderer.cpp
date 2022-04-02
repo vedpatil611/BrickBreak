@@ -52,5 +52,14 @@ void SpriteRenderer::drawSprite(Texture* texture, const glm::vec2& pos, const gl
     model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
     model = glm::scale(model, glm::vec3(size, 1.0f));
 
+    m_Shader->setUniformMat4("uModel", model);
+    m_Shader->setUniform4f("uColor", color);
     
+    glActiveTexture(GL_TEXTURE0);
+    texture->bind();
+
+    glBindVertexArray(this->m_VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    glBindVertexArray(0);
 }
