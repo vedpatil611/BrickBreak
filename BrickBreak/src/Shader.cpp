@@ -15,6 +15,28 @@ Shader::Shader(const char* vertPath, const char* fragPath)
     glLinkProgram(m_Id);
     glValidateProgram(m_Id);
  
+    int numUniforms;
+    glGetProgramiv(m_Id, GL_ACTIVE_UNIFORMS, &numUniforms);
+
+    int maxUniformLength;
+    glGetProgramiv(m_Id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxUniformLength);
+
+    if(numUniforms > 0 && maxUniformLength > 0)
+    {
+        char* uniformName = new char[maxUniformLength];
+        
+        for (int i = 0; i < numUniforms; ++i)
+        {
+            int len, size;
+            GLenum dataType;
+
+            glGetActiveUniform(m_Id, i, maxUniformLength, &len, &size, &dataType, uniformName);
+            m_Cache[uniformName] = glGetUniformLocation(m_Id, uniformName);
+        }
+
+        delete[] uniformName; 
+    }
+ 
     // Shader has been linked and source is no longer needed
     glDeleteShader(vs);
     glDeleteShader(fs);
