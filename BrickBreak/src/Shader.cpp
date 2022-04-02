@@ -57,6 +57,16 @@ void Shader::unbind() const
     glUseProgram(0);
 }
 
+void Shader::setUniform4f(const char* uniform, const glm::vec4& vec)
+{
+    glUniform4f(m_Cache[uniform], vec.x, vec.y, vec.z, vec.w);
+}
+
+void Shader::setUniformMat4(const char* uniform, const glm::mat4& mat)
+{
+    glUniformMatrix4fv(m_Cache[uniform], 1, false, &mat[0][0]);
+}
+
 uint32_t Shader::compileShader(unsigned int type, const char* shaderPath)
 {
     auto id = glCreateShader(type);
