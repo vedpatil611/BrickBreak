@@ -29,4 +29,10 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/BrickBreak/shader ${PROJECT_SOURCE_DIR}/bin/shader
 )
 
+add_custom_command(
+    TARGET BrickBreak
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/BrickBreak/textures ${PROJECT_SOURCE_DIR}/bin/textures
+)
+
 # install(TARGETS BrickBreak DESTINATION lib)
