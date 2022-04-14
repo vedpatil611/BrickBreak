@@ -11,7 +11,12 @@ public:
     Window(int width, int height);
     ~Window();
 
+    inline int getWidth() const { return m_Width; }
+    inline int getHeight() const { return m_Height; }
+
     void clear();
     void update();
     bool shouldClose() const;
+private:
+    static void windowSizeCallback(GLFWwindow* window, int w, int h);
 };

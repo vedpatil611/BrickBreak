@@ -21,6 +21,7 @@ public:
 private:
     Shader* m_Shader;
     unsigned int m_VAO;
+    unsigned int m_VBO;
 
     void init();
 };

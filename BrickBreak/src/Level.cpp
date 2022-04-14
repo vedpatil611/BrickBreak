@@ -26,8 +26,9 @@ Level::Level(const char* file, unsigned int width, unsigned int height)
             tilesData.push_back(row);
         }
 
-        if (tilesData.size() > 0) {}
+        if (tilesData.size() > 0) init(tilesData, width, height);
     }
+    // for(auto& x:tilesData) { for(auto& y:x) { printf("%d ", y); } printf("\n); }
 }
 
 void Level::render(SpriteRenderer& renderer)

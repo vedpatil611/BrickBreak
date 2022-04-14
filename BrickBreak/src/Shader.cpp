@@ -12,8 +12,26 @@ Shader::Shader(const char* vertPath, const char* fragPath)
 
     glAttachShader(m_Id, vs);
     glAttachShader(m_Id, fs);
+
+    int result = 0;
+	char eLog[1024] = { 0 };
+
     glLinkProgram(m_Id);
+    glGetProgramiv(m_Id, GL_LINK_STATUS, &result);
+	if (!result)
+	{
+		glGetProgramInfoLog(m_Id, sizeof(eLog), nullptr, eLog);
+		printf("Error linking program: '%s'\n", eLog);
+	}
+
+
     glValidateProgram(m_Id);
+    glGetProgramiv(m_Id, GL_VALIDATE_STATUS, &result);
+	if (!result)
+	{
+		glGetProgramInfoLog(m_Id, sizeof(eLog), nullptr, eLog);
+		printf("Error valifdating program: '%s'\n", eLog);
+	}
  
     int numUniforms;
     glGetProgramiv(m_Id, GL_ACTIVE_UNIFORMS, &numUniforms);

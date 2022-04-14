@@ -14,13 +14,17 @@ Window::Window(int width, int height)
         throw std::runtime_error("Failed to create window");
 	
     glfwMakeContextCurrent(m_Window);
-    gladLoadGL();
+    gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+    // gladLoadGL();
 
     // Buffer size info
     int bufferWidth, bufferHeight;
     glfwGetFramebufferSize(m_Window, &bufferWidth, &bufferHeight);
 
     glViewport(0, 0, bufferWidth, bufferHeight);
+
+    glfwSetWindowUserPointer(m_Window, this);
+    glfwSetWindowSizeCallback(m_Window, &Window::windowSizeCallback);
 }
 
 Window::~Window()
@@ -31,7 +35,7 @@ Window::~Window()
 
 void Window::clear()
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -44,4 +48,12 @@ void Window::update()
 bool Window::shouldClose() const
 {
 	return glfwWindowShouldClose(m_Window);
+}
+
+void Window::windowSizeCallback(GLFWwindow* window, int w, int h)
+{
+    Window* thisPtr = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+    thisPtr->m_Width = w;
+    thisPtr->m_Height = h;
+    glViewport(0, 0, w, h);
 }
