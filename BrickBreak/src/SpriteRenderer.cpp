@@ -13,12 +13,12 @@ SpriteRenderer::SpriteRenderer(Shader* shader)
     glCreateVertexArrays(1, &m_VAO);
     glBindVertexArray(m_VAO);
 
-    /* VertexData vertices[] = {
+    VertexData vertices[] = {
         { { 0.0f, 1.0f }, { 0.0f, 1.0f } },
         { { 0.0f, 0.0f }, { 0.0f, 0.0f } },
         { { 1.0f, 0.0f }, { 1.0f, 0.0f } },
         { { 1.0f, 1.0f }, { 1.0f, 1.0f } },
-    }; */
+    };
 
     /* VertexData vertices[] = {
         { { 0.0f, 0.0f }, { 0.0f, 0.0f } },
@@ -30,7 +30,7 @@ SpriteRenderer::SpriteRenderer(Shader* shader)
         { { 0.0f, 0.0f }, { 0.0f, 0.0f } },
     }; */
 
-    VertexData vertices[] = {
+    /* VertexData vertices[] = {
         { { 0.0f, 1.0f }, { 0.0f, 1.0f } },
         { { 1.0f, 0.0f }, { 1.0f, 0.0f } },
         { { 0.0f, 0.0f }, { 0.0f, 0.0f } },
@@ -41,20 +41,20 @@ SpriteRenderer::SpriteRenderer(Shader* shader)
         
         // { { 1.0f, 1.0f }, { 1.0f, 1.0f } },
         // { { 0.0f, 0.0f }, { 0.0f, 0.0f } },
-    };
+    }; */
 
-    // unsigned short indicies[] = {
-        // 0, 1, 2,
-        // 2, 3, 0,
-    // };
+    unsigned short indicies[] = {
+        0, 1, 2,
+        2, 3, 0,
+    };
 
     glCreateBuffers(1, &m_VBO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // glGenBuffers(1, &m_IBO);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
+    glGenBuffers(1, &m_IBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
 /*
     unsigned int ibo;
     glCreateBuffers(1, &ibo);
@@ -109,8 +109,8 @@ void SpriteRenderer::drawSprite(Texture* texture, const glm::vec2& pos, const gl
     texture->bind();
 
     glBindVertexArray(this->m_VAO);
-    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr);
+    // glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glBindVertexArray(0);
 }
