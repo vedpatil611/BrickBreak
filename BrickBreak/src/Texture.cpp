@@ -6,7 +6,7 @@ Texture::Texture()
     :m_Width(0), m_Height(0), 
     m_InternalFormat(GL_RGB), m_ImageFormat(GL_RGB), 
     m_WrapS(GL_REPEAT), m_WrapT(GL_REPEAT), 
-    m_FilterMin(GL_LINEAR), m_FilterMax(GL_LINEAR)
+    m_FilterMin(GL_NEAREST), m_FilterMax(GL_NEAREST)
 {
     glGenTextures(1, &m_Id);
 }

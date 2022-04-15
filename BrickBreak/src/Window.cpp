@@ -24,6 +24,7 @@ Window::Window(int width, int height)
     glViewport(0, 0, bufferWidth, bufferHeight);
 
     glfwSetWindowUserPointer(m_Window, this);
+    glfwSetKeyCallback(m_Window, &Window::keyCallback);
     glfwSetWindowSizeCallback(m_Window, &Window::windowSizeCallback);
 }
 
@@ -48,6 +49,16 @@ void Window::update()
 bool Window::shouldClose() const
 {
 	return glfwWindowShouldClose(m_Window);
+}
+
+void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    Window* thisPtr = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+    if (key >=0 && key < 1024)
+    {
+        if (action == GLFW_PRESS) thisPtr->m_Input[key] = true;
+        else if (action == GLFW_RELEASE) thisPtr->m_Input[key] = false;
+    }
 }
 
 void Window::windowSizeCallback(GLFWwindow* window, int w, int h)
