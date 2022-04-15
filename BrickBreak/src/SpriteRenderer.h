@@ -20,8 +20,7 @@ public:
                     float rotate, const glm::vec4& color);
 private:
     Shader* m_Shader;
-    unsigned int m_VAO;
-    unsigned int m_VBO;
+    unsigned int m_VAO, m_VBO, m_IBO;
 
     void init();
 };

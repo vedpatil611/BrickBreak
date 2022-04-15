@@ -22,7 +22,8 @@ int main()
 
     SpriteRenderer spriteRenderer(ResourceManager::shaders["basic"]);
   
-    Level one("levels/level1.lvl", window.getWidth(), window.getHeight() / 2);
+    // Level one("levels/level1.lvl", window.getWidth(), window.getHeight() / 2);
+    Level one("levels/level1.lvl", 800, 800 / 2);
 
     while(!window.shouldClose())
     {
