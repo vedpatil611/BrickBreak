@@ -1,3 +1,4 @@
+#include "Ball.h"
 #include "Level.h"
 #include "ResourceManager.h"
 #include "Shader.h"
@@ -16,6 +17,7 @@ const float WIDTH = 800.0f;
 const float HEIGHT = 600.0f;
 
 Object* player;
+Ball* ball;
 
 int main()
 {
@@ -25,7 +27,8 @@ int main()
     ResourceManager::loadTexture("textures/Block.png", true, "block");
     ResourceManager::loadTexture("textures/SolidMetal.png", true, "solid_block");
     Texture* paddleTex = ResourceManager::loadTexture("textures/Paddle.png", true, "player");
-
+    Texture* ballTex = ResourceManager::loadTexture("textures/Ball.png", true, "ball");
+        
     SpriteRenderer spriteRenderer(ResourceManager::shaders["basic"]);
   
     // Level one("levels/level1.lvl", window.getWidth(), window.getHeight() / 2);
@@ -38,6 +41,11 @@ int main()
     );
     float velocity = 10.0f;
     player = new Object(playerPos, playerSize, paddleTex);
+
+    const glm::vec2 ballVelocity(12.0f, 12.0f);
+    const float BALL_RADIUS = 12.0f;
+    glm::vec2 ballPos = playerPos + glm::vec2(playerSize.x / 2 - BALL_RADIUS, - BALL_RADIUS * 2.0f);
+    ball = new Ball(ballPos, BALL_RADIUS, ballVelocity, ballTex);
 
     while(!window.shouldClose())
     {
@@ -54,14 +62,25 @@ int main()
         const auto& input = window.getInputs();
         if (input[GLFW_KEY_LEFT])
         {
-            if (player->pos.x >= 0.0f) player->pos.x -= velocity;
+            if (player->pos.x >= 0.0f) 
+            {
+                player->pos.x -= velocity;
+                if (ball->stuck) ball->pos.x -= velocity;
+            }
         }
         else if (input[GLFW_KEY_RIGHT])
         {
-            if (player->pos.x <= WIDTH - player->size.x) player->pos.x += velocity;
+            if (player->pos.x <= WIDTH - player->size.x) 
+            {
+                player->pos.x += velocity;
+                if (ball->stuck) ball->pos.x += velocity;
+            }
         }
         player->render(spriteRenderer);
-    
+ 
+        ball->move(0, WIDTH);
+        ball->render(spriteRenderer);
+
         window.update();
     }
 
