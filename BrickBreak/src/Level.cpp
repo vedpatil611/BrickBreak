@@ -49,7 +49,7 @@ void Level::init(std::vector<std::vector<unsigned int>>& tilesData, unsigned int
     {
         for (unsigned int x = 0; x < width; ++x)
         {
-            glm::vec2 pos(unitWidth * x, unitWidth * y);
+            glm::vec2 pos(unitWidth * x, unitHeight * y);
             glm::vec2 size(unitWidth, unitHeight);
             if (tilesData[y][x] == 1)
             {

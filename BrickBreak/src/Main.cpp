@@ -12,11 +12,14 @@ enum GameState {
     ACTIVE,
 };
 
+const float WIDTH = 800.0f;
+const float HEIGHT = 600.0f;
+
 Object* player;
 
 int main()
 {
-    Window window(800, 800);
+    Window window(800, 600);
 
     Shader* shader = ResourceManager::loadShader("shader/vert.glsl", "shader/frag.glsl", "basic");
     ResourceManager::loadTexture("textures/Block.png", true, "block");
@@ -26,12 +29,12 @@ int main()
     SpriteRenderer spriteRenderer(ResourceManager::shaders["basic"]);
   
     // Level one("levels/level1.lvl", window.getWidth(), window.getHeight() / 2);
-    Level one("levels/level1.lvl", 800, 800 / 2);
+    Level one("levels/level1.lvl", WIDTH, HEIGHT / 2);
 
     glm::vec2 playerSize(100.0f, 20.0f);
     glm::vec2 playerPos(
-        800.0f / 2.0f - playerSize.x / 2,
-        800.0f - playerSize.y
+        WIDTH / 2.0f - playerSize.x / 2,
+        HEIGHT - playerSize.y
     );
     float velocity = 10.0f;
     player = new Object(playerPos, playerSize, paddleTex);
@@ -41,7 +44,7 @@ int main()
         window.clear();
         
         // glm::mat4 proj = glm::ortho(0.0f, (float) window.getWidth(), 0.0f, (float) window.getHeight(), -1.0f, 1.0f);
-        glm::mat4 proj = glm::ortho(0.0f, 800.0f, 800.0f, 0.0f, -1.0f, 1.0f);
+        glm::mat4 proj = glm::ortho(0.0f, WIDTH, HEIGHT, 0.0f, -1.0f, 1.0f);
         shader->bind();
         shader->setUniformMat4("uProjection", proj);
 
@@ -55,7 +58,7 @@ int main()
         }
         else if (input[GLFW_KEY_RIGHT])
         {
-            if (player->pos.x <= 800.0f - player->size.x) player->pos.x += velocity;
+            if (player->pos.x <= WIDTH - player->size.x) player->pos.x += velocity;
         }
         player->render(spriteRenderer);
     
