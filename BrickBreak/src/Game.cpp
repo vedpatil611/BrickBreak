@@ -16,6 +16,7 @@ void Game::loop(float delta)
     SpriteRenderer* spriteRenderer = renderers["basic"];
     float velocity = 10.0f;
     
+    if (!levels[currentLevel]->isLoaded()) levels[currentLevel]->load();
     levels[currentLevel]->render(*spriteRenderer);
 
     const auto& input = window->getInputs();

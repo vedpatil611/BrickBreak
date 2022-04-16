@@ -6,11 +6,14 @@
 #include "ResourceManager.h"
 
 Level::Level(const char* file, unsigned int width, unsigned int height)
+    :m_File(file), m_Width(width), m_Height(height) {}
+
+void Level::load()
 {
     objects.clear();
 
     std::string line;
-    std::ifstream fstream(file);
+    std::ifstream fstream(m_File);
 
     std::vector<std::vector<unsigned int>> tilesData;
 
@@ -26,7 +29,7 @@ Level::Level(const char* file, unsigned int width, unsigned int height)
             tilesData.push_back(row);
         }
 
-        if (tilesData.size() > 0) init(tilesData, width, height);
+        if (tilesData.size() > 0) init(tilesData, m_Width, m_Height);
     }
     // for(auto& x:tilesData) { for(auto& y:x) { printf("%d ", y); } printf("\n); }
 }
