@@ -27,6 +27,12 @@ void Game::loop(double delta)
 
     Game::processCollision();
 
+    if (ball->pos.y >= HEIGHT) 
+    {
+        player->pos = glm::vec2(WIDTH / 2.0f - player->size.x / 2.0f, HEIGHT - player->size.y);
+        ball->reset(player->pos + glm::vec2(player->size.x / 2.0f - ball->radius, - ball->radius * 2.0f));
+    }
+
     window->update();
 }
 
@@ -60,7 +66,7 @@ Game::Game()
     // float velocity = 10.0f;
     player = new Object(playerPos, playerSize, paddleTex);
 
-    const glm::vec2 ballVelocity(0.6f, -0.6f);
+    const glm::vec2 ballVelocity(0.3f, -0.3f);
     const float BALL_RADIUS = 12.0f;
     glm::vec2 ballPos = playerPos + glm::vec2(playerSize.x / 2 - BALL_RADIUS, - BALL_RADIUS * 2.0f);
     ball = new Ball(ballPos, BALL_RADIUS, ballVelocity, ballTex);
@@ -69,7 +75,7 @@ Game::Game()
 void Game::processInput(double delta)
 {
     const auto& input = window->getInputs();
-    float velocity = 1.0f;
+    float velocity = 0.5f;
 
     if (input[GLFW_KEY_LEFT])
     {
@@ -155,7 +161,17 @@ void Game::processCollision()
     Collision result = checkCollision(ball, player);
     if(!ball->stuck && std::get<0>(result))
     {
-        ball->velocity.y *= -1.0f;
+        float boardCenter = player->pos.x + player->size.x / 2.0f;
+        float distance = (ball->pos.x + ball->radius) - boardCenter;
+        float ratio = distance / (player->size.x / 2.0f);
+
+        float strenght = 2.0f;
+        glm::vec2 oldVelocity = ball->velocity;
+        ball->velocity.x = ball->initialVelocity.x * ratio * strenght;
+        // ball->velocity.x = ball->velocity.x * ratio * strenght;
+        ball->velocity.y = -1.0f * std::abs(ball->velocity.y);
+        
+        ball->velocity = glm::normalize(ball->velocity) * glm::length(oldVelocity);
     }
 }
 

@@ -1,10 +1,10 @@
 #include "Ball.h"
 
 Ball::Ball()
-    :Object(), radius(12.0f), stuck(true) {}
+    :Object(), radius(12.0f), stuck(true), initialVelocity(0.5f, -0.5f) {}
 
 Ball::Ball(const glm::vec2& pos, float radius, glm::vec2 velocity, Texture* texture)
-    :Object(pos, glm::vec2(radius * 2.0f, radius * 2.0f), texture, 0.0f, glm::vec4(1.0f), velocity), radius(radius), stuck(true) {}
+    :Object(pos, glm::vec2(radius * 2.0f, radius * 2.0f), texture, 0.0f, glm::vec4(1.0f), velocity), radius(radius), stuck(true), initialVelocity(velocity) {}
 
 glm::vec2 Ball::move(double delta, unsigned int windowWidth)
 {
@@ -29,6 +29,13 @@ glm::vec2 Ball::move(double delta, unsigned int windowWidth)
         }
     }
     return pos;
+}
+
+void Ball::reset(const glm::vec2& pos)
+{
+    this->pos = pos;
+    this->velocity = initialVelocity;
+    stuck = true;
 }
 
 void Ball::reset(const glm::vec2& pos, const glm::vec2& velocity)
