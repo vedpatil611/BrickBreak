@@ -60,7 +60,7 @@ Game::Game()
     // float velocity = 10.0f;
     player = new Object(playerPos, playerSize, paddleTex);
 
-    const glm::vec2 ballVelocity(0.7f, -0.7f);
+    const glm::vec2 ballVelocity(0.6f, -0.6f);
     const float BALL_RADIUS = 12.0f;
     glm::vec2 ballPos = playerPos + glm::vec2(playerSize.x / 2 - BALL_RADIUS, - BALL_RADIUS * 2.0f);
     ball = new Ball(ballPos, BALL_RADIUS, ballVelocity, ballTex);
@@ -93,16 +93,8 @@ void Game::processInput(double delta)
         ball->stuck = false;
     }
 }
-
-bool Game::checkCollision(Object* one, Object* two)
-{
-    bool x = one->pos.x + one->size.x >= two->pos.x && two->pos.x + two->size.x >= one->pos.x;
-    bool y = one->pos.y + one->size.y >= two->pos.y && two->pos.y + two->size.y >= one->pos.y;
-
-    return x && y;
-}
-    
-bool Game::checkCollision(Ball* ball, Object* obj)
+   
+Collision Game::checkCollision(Ball* ball, Object* obj)
 {
     glm::vec2 center(ball->pos + ball->radius);
     glm::vec2 aabbHalfExtent(obj->size.x / 2.0f, obj->size.y / 2.0f);
@@ -117,7 +109,10 @@ bool Game::checkCollision(Ball* ball, Object* obj)
     glm::vec2 closest = aabbCenter + clamped;
     diff = closest - center;
 
-    return glm::length(diff) < ball->radius;
+    if (glm::length(diff) <= ball->radius)
+        return std::make_tuple(true, VectorDirection(diff), diff);
+    else
+        return std::make_tuple(false, Direction::UP, glm::vec2(0.0f, 0.0f));
 }
 
 void Game::processCollision()
@@ -126,14 +121,41 @@ void Game::processCollision()
     {
         if(!box.destroyed)
         {
-            if (checkCollision(ball, &box))
+            Collision collision = checkCollision(ball, &box);
+            if (std::get<0>(collision))
             {
-                if(!box.isSolid) 
+                if(!box.isSolid) box.destroyed = true;
+
+                Direction dir = std::get<1>(collision);
+                glm::vec2 diff = std::get<2>(collision);
+                if (dir == LEFT || dir == RIGHT)
                 {
-                    box.destroyed = true;
+                    ball->velocity.x *= -1.0f;
+                    
+                    float penetration = ball->radius - std::abs(diff.x);
+                    if(dir == LEFT)
+                        ball->pos.x += penetration;
+                    else
+                        ball->pos.x -= penetration;
+                }
+                else
+                {
+                    ball->velocity.y *= -1.0f;
+                    
+                    float penetration = ball->radius - std::abs(diff.y);
+                    if(dir == UP)
+                        ball->pos.y -= penetration;
+                    else
+                        ball->pos.y += penetration;
                 }
             }
         }
+    }
+
+    Collision result = checkCollision(ball, player);
+    if(!ball->stuck && std::get<0>(result))
+    {
+        ball->velocity.y *= -1.0f;
     }
 }
 

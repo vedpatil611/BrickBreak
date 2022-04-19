@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Ball.h"
+#include "Collision.h"
 #include "Level.h"
 #include "Object.h"
 #include "Window.h"
@@ -35,8 +36,7 @@ private:
     inline static int currentLevel = 0;
 
     static void processInput(double delta);
-    static bool checkCollision(Object* one, Object* two);
-    static bool checkCollision(Ball* ball, Object* obj);
+    static Collision checkCollision(Ball* ball, Object* obj);
     static void processCollision();
 
     Game();
