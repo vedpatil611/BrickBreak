@@ -14,7 +14,7 @@ void Game::loop(double delta)
 {
     window->clear();
     SpriteRenderer* spriteRenderer = renderers["basic"];
-    float velocity = 10.0f;
+    float velocity = 0.7f;
     
     if (!levels[currentLevel]->isLoaded()) levels[currentLevel]->load();
     levels[currentLevel]->render(*spriteRenderer);
@@ -24,21 +24,27 @@ void Game::loop(double delta)
     {
         if (player->pos.x >= 0.0f) 
         {
-            player->pos.x -= velocity;
-            if (ball->stuck) ball->pos.x -= velocity;
+            player->pos.x -= velocity * delta;
+            if (ball->stuck) ball->pos.x -= velocity * delta;
         }
     }
     else if (input[GLFW_KEY_RIGHT])
     {
         if (player->pos.x <= WIDTH - player->size.x) 
         {
-            player->pos.x += velocity;
-            if (ball->stuck) ball->pos.x += velocity;
+            player->pos.x += velocity * delta;
+            if (ball->stuck) ball->pos.x += velocity * delta;
         }
     }
+
+    if (input[GLFW_KEY_SPACE])
+    {
+        ball->stuck = false;
+    }
+
     player->render(*spriteRenderer);
  
-    ball->move(0, WIDTH);
+    ball->move(delta, WIDTH);
     ball->render(*spriteRenderer);
 
     window->update();
@@ -73,7 +79,7 @@ Game::Game()
     // float velocity = 10.0f;
     player = new Object(playerPos, playerSize, paddleTex);
 
-    const glm::vec2 ballVelocity(12.0f, 12.0f);
+    const glm::vec2 ballVelocity(0.7f, -0.7f);
     const float BALL_RADIUS = 12.0f;
     glm::vec2 ballPos = playerPos + glm::vec2(playerSize.x / 2 - BALL_RADIUS, - BALL_RADIUS * 2.0f);
     ball = new Ball(ballPos, BALL_RADIUS, ballVelocity, ballTex);
