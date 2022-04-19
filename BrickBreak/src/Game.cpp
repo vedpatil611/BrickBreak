@@ -101,6 +101,24 @@ bool Game::checkCollision(Object* one, Object* two)
 
     return x && y;
 }
+    
+bool Game::checkCollision(Ball* ball, Object* obj)
+{
+    glm::vec2 center(ball->pos + ball->radius);
+    glm::vec2 aabbHalfExtent(obj->size.x / 2.0f, obj->size.y / 2.0f);
+    glm::vec2 aabbCenter(
+        obj->pos.x + aabbHalfExtent.x,
+        obj->pos.y + aabbHalfExtent.y
+    );
+
+    glm::vec2 diff = center - aabbCenter;
+    glm::vec2 clamped = glm::clamp(diff, -aabbHalfExtent, aabbHalfExtent);
+    
+    glm::vec2 closest = aabbCenter + clamped;
+    diff = closest - center;
+
+    return glm::length(diff) < ball->radius;
+}
 
 void Game::processCollision()
 {

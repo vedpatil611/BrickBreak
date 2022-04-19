@@ -36,6 +36,7 @@ private:
 
     static void processInput(double delta);
     static bool checkCollision(Object* one, Object* two);
+    static bool checkCollision(Ball* ball, Object* obj);
     static void processCollision();
 
     Game();
