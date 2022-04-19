@@ -31,13 +31,16 @@ void Level::load()
 
         if (tilesData.size() > 0) init(tilesData, m_Width, m_Height);
     }
+
+    m_IsLoaded = true;
     // for(auto& x:tilesData) { for(auto& y:x) { printf("%d ", y); } printf("\n); }
 }
 
 void Level::render(SpriteRenderer& renderer)
 {
     for(auto& brick: objects)
-        brick.render(renderer);
+        if (!brick.destroyed)    
+            brick.render(renderer);
 }
 
 void Level::init(std::vector<std::vector<unsigned int>>& tilesData, unsigned int lvlWidth, unsigned int lvlHeight)
@@ -57,6 +60,7 @@ void Level::init(std::vector<std::vector<unsigned int>>& tilesData, unsigned int
             if (tilesData[y][x] == 1)
             {
                 Object brick(pos, size, ResourceManager::textures["solid_block"]);
+                brick.isSolid = true;
                 objects.push_back(brick);
             }
             else if (tilesData[y][x] > 1)

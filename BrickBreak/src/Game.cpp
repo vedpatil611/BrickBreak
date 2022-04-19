@@ -14,12 +14,63 @@ void Game::loop(double delta)
 {
     window->clear();
     SpriteRenderer* spriteRenderer = renderers["basic"];
-    float velocity = 0.7f;
     
     if (!levels[currentLevel]->isLoaded()) levels[currentLevel]->load();
     levels[currentLevel]->render(*spriteRenderer);
 
+    Game::processInput(delta);
+    
+    player->render(*spriteRenderer);
+ 
+    ball->move(delta, WIDTH);
+    ball->render(*spriteRenderer);
+
+    Game::processCollision();
+
+    window->update();
+}
+
+Game::Game()
+{
+    gamePtr = this;
+    
+    window = new Window(800.0f, 600.0f);
+ 
+    Shader* shader = ResourceManager::loadShader("shader/vert.glsl", "shader/frag.glsl", "basic");
+    ResourceManager::loadTexture("textures/Block.png", true, "block");
+    ResourceManager::loadTexture("textures/SolidMetal.png", true, "solid_block");
+    Texture* paddleTex = ResourceManager::loadTexture("textures/Paddle.png", true, "player");
+    Texture* ballTex = ResourceManager::loadTexture("textures/Ball.png", true, "ball");
+
+    SpriteRenderer* spriteRenderer = new SpriteRenderer(ResourceManager::shaders["basic"]);
+    renderers["basic"] = spriteRenderer;
+
+    levels.push_back(new Level("levels/level1.lvl", WIDTH, HEIGHT / 2));
+    levels[0]->load();
+
+    glm::mat4 proj = glm::ortho(0.0f, WIDTH, HEIGHT, 0.0f, -1.0f, 1.0f);
+    shader->bind();
+    shader->setUniformMat4("uProjection", proj);
+
+    glm::vec2 playerSize(100.0f, 20.0f);
+    glm::vec2 playerPos(
+        WIDTH / 2.0f - playerSize.x / 2,
+        HEIGHT - playerSize.y
+    );
+    // float velocity = 10.0f;
+    player = new Object(playerPos, playerSize, paddleTex);
+
+    const glm::vec2 ballVelocity(0.7f, -0.7f);
+    const float BALL_RADIUS = 12.0f;
+    glm::vec2 ballPos = playerPos + glm::vec2(playerSize.x / 2 - BALL_RADIUS, - BALL_RADIUS * 2.0f);
+    ball = new Ball(ballPos, BALL_RADIUS, ballVelocity, ballTex);
+}
+
+void Game::processInput(double delta)
+{
     const auto& input = window->getInputs();
+    float velocity = 1.0f;
+
     if (input[GLFW_KEY_LEFT])
     {
         if (player->pos.x >= 0.0f) 
@@ -41,48 +92,31 @@ void Game::loop(double delta)
     {
         ball->stuck = false;
     }
-
-    player->render(*spriteRenderer);
- 
-    ball->move(delta, WIDTH);
-    ball->render(*spriteRenderer);
-
-    window->update();
 }
 
-Game::Game()
+bool Game::checkCollision(Object* one, Object* two)
 {
-    gamePtr = this;
-    
-    window = new Window(800.0f, 600.0f);
- 
-    Shader* shader = ResourceManager::loadShader("shader/vert.glsl", "shader/frag.glsl", "basic");
-    ResourceManager::loadTexture("textures/Block.png", true, "block");
-    ResourceManager::loadTexture("textures/SolidMetal.png", true, "solid_block");
-    Texture* paddleTex = ResourceManager::loadTexture("textures/Paddle.png", true, "player");
-    Texture* ballTex = ResourceManager::loadTexture("textures/Ball.png", true, "ball");
+    bool x = one->pos.x + one->size.x >= two->pos.x && two->pos.x + two->size.x >= one->pos.x;
+    bool y = one->pos.y + one->size.y >= two->pos.y && two->pos.y + two->size.y >= one->pos.y;
 
-    SpriteRenderer* spriteRenderer = new SpriteRenderer(ResourceManager::shaders["basic"]);
-    renderers["basic"] = spriteRenderer;
+    return x && y;
+}
 
-    levels.push_back(new Level("levels/level1.lvl", WIDTH, HEIGHT / 2));
-
-    glm::mat4 proj = glm::ortho(0.0f, WIDTH, HEIGHT, 0.0f, -1.0f, 1.0f);
-    shader->bind();
-    shader->setUniformMat4("uProjection", proj);
-
-    glm::vec2 playerSize(100.0f, 20.0f);
-    glm::vec2 playerPos(
-        WIDTH / 2.0f - playerSize.x / 2,
-        HEIGHT - playerSize.y
-    );
-    // float velocity = 10.0f;
-    player = new Object(playerPos, playerSize, paddleTex);
-
-    const glm::vec2 ballVelocity(0.7f, -0.7f);
-    const float BALL_RADIUS = 12.0f;
-    glm::vec2 ballPos = playerPos + glm::vec2(playerSize.x / 2 - BALL_RADIUS, - BALL_RADIUS * 2.0f);
-    ball = new Ball(ballPos, BALL_RADIUS, ballVelocity, ballTex);
+void Game::processCollision()
+{
+    for(Object& box: levels[currentLevel]->objects)
+    {
+        if(!box.destroyed)
+        {
+            if (checkCollision(ball, &box))
+            {
+                if(!box.isSolid) 
+                {
+                    box.destroyed = true;
+                }
+            }
+        }
+    }
 }
 
 Game::~Game()

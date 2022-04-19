@@ -34,5 +34,9 @@ private:
 
     inline static int currentLevel = 0;
 
+    static void processInput(double delta);
+    static bool checkCollision(Object* one, Object* two);
+    static void processCollision();
+
     Game();
 };

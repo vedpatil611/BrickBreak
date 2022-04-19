@@ -12,6 +12,8 @@ public:
     float rotation;
 
     glm::vec2 velocity;
+    bool destroyed = false;
+    bool isSolid = false;
 
     Texture* texture;
 
