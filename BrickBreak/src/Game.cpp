@@ -10,7 +10,7 @@ Game* Game::CreateGame()
     return gamePtr;
 }
 
-void Game::loop(float delta)
+void Game::loop(double delta)
 {
     window->clear();
     SpriteRenderer* spriteRenderer = renderers["basic"];

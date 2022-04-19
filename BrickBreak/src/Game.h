@@ -15,7 +15,7 @@ public:
     inline static const float HEIGHT = 600.0f;
   
     static Game* CreateGame();
-    static void loop(float delta);
+    static void loop(double delta);
 
     inline static const Object* getPlayer() { return player; }
     inline static const Ball* getBall() { return ball; }
