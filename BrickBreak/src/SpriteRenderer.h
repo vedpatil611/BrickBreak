@@ -2,15 +2,14 @@
 
 #include <glm/glm.hpp>
 #include "Shader.h"
+#include "Renderer.h"
 #include "Texture.h"
 
-
-
-class SpriteRenderer
+class SpriteRenderer: public Renderer
 {
 public:
     SpriteRenderer(Shader* shader);
-    ~SpriteRenderer();
+    virtual ~SpriteRenderer();
 
     void drawSprite(Texture* texture, const glm::vec2& pos, const glm::vec2& size, 
                     float rotate, const glm::vec4& color);

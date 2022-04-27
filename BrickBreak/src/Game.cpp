@@ -60,8 +60,8 @@ Game::Game()
     // SpriteRenderer* spriteRenderer = new SpriteRenderer(ResourceManager::shaders["basic"]);
     BatchRenderer* batchRenderer = new BatchRenderer(ResourceManager::shaders["batch"]);
 
-    // renderers["basic"] = (void*) spriteRenderer;
-    renderers["batch"] = (void*) batchRenderer;
+    // renderers["basic"] = spriteRenderer;
+    renderers["batch"] = batchRenderer;
 
     levels.push_back(new Level("levels/level1.lvl", WIDTH, HEIGHT / 2));
     levels[0]->load();

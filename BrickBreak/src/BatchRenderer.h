@@ -1,17 +1,18 @@
 #pragma once
 
 #include "Object.h"
+#include "Renderer.h"
 #include "Shader.h"
 #include <vector>
 #include <glm/glm.hpp>
 
 #define RENDERER_MAX_SPRITES	1000
 
-class BatchRenderer
+class BatchRenderer: public Renderer
 {
 public:
     BatchRenderer(Shader* shader);
-    ~BatchRenderer();
+    ~BatchRenderer() override;
 
     void begin();
     void submit(Object* object);
