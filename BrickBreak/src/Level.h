@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Object.h"
+#include "BatchRenderer.h"
 #include "SpriteRenderer.h"
 #include <vector>
 
@@ -12,7 +13,8 @@ public:
     Level(const char* file, unsigned int levelWidth, unsigned int levelHeight);
     void load();
 
-    void render(SpriteRenderer& spriteRenderer);
+    void render(SpriteRenderer* renderer);
+    void render(BatchRenderer* renderer);
 
     inline bool isLoaded() const { return m_IsLoaded; }
 private:

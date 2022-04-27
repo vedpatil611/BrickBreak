@@ -29,7 +29,10 @@ Texture* ResourceManager::loadTexture(const char* path, bool alpha, std::string 
 
     tex->generate(width, height, data);
     textures[name] = tex;
-    
+ 
+    if (data)
+        stbi_image_free(data);
+
     return tex;
 }
 

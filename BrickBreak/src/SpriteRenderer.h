@@ -4,11 +4,7 @@
 #include "Shader.h"
 #include "Texture.h"
 
-struct VertexData
-{
-    glm::vec2 pos;
-    glm::vec2 uv;
-};
+
 
 class SpriteRenderer
 {
@@ -23,4 +19,10 @@ private:
     unsigned int m_VAO, m_VBO, m_IBO;
 
     void init();
+
+    struct VertexData
+    {
+        glm::vec2 pos;
+        glm::vec2 uv;
+    };
 };

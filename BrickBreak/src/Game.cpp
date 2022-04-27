@@ -1,5 +1,6 @@
 #include "Game.h"
 
+#include "BatchRenderer.h"
 #include "ResourceManager.h"
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -13,18 +14,25 @@ Game* Game::CreateGame()
 void Game::loop(double delta)
 {
     window->clear();
-    SpriteRenderer* spriteRenderer = renderers["basic"];
-    
+    // SpriteRenderer* spriteRenderer = (SpriteRenderer*) renderers["basic"];
+    BatchRenderer* renderer = (BatchRenderer*) renderers["batch"];
+
     if (!levels[currentLevel]->isLoaded()) levels[currentLevel]->load();
-    levels[currentLevel]->render(*spriteRenderer);
+    
+    renderer->begin();
+    levels[currentLevel]->render(renderer);
 
     Game::processInput(delta);
     
-    player->render(*spriteRenderer);
+    renderer->submit(player);
+    // player->render(spriteRenderer);
  
     ball->move(delta, WIDTH);
-    ball->render(*spriteRenderer);
-
+    renderer->submit(ball);
+    // ball->render(spriteRenderer);
+    
+    renderer->end();
+    renderer->render();
     Game::processCollision();
 
     if (ball->pos.y >= HEIGHT) 
@@ -43,13 +51,17 @@ Game::Game()
     window = new Window(800.0f, 600.0f);
  
     Shader* shader = ResourceManager::loadShader("shader/vert.glsl", "shader/frag.glsl", "basic");
+    shader = ResourceManager::loadShader("shader/batch_vert.glsl", "shader/batch_frag.glsl", "batch");
     ResourceManager::loadTexture("textures/Block.png", true, "block");
     ResourceManager::loadTexture("textures/SolidMetal.png", true, "solid_block");
     Texture* paddleTex = ResourceManager::loadTexture("textures/Paddle.png", true, "player");
     Texture* ballTex = ResourceManager::loadTexture("textures/Ball.png", true, "ball");
 
-    SpriteRenderer* spriteRenderer = new SpriteRenderer(ResourceManager::shaders["basic"]);
-    renderers["basic"] = spriteRenderer;
+    // SpriteRenderer* spriteRenderer = new SpriteRenderer(ResourceManager::shaders["basic"]);
+    BatchRenderer* batchRenderer = new BatchRenderer(ResourceManager::shaders["batch"]);
+
+    // renderers["basic"] = (void*) spriteRenderer;
+    renderers["batch"] = (void*) batchRenderer;
 
     levels.push_back(new Level("levels/level1.lvl", WIDTH, HEIGHT / 2));
     levels[0]->load();

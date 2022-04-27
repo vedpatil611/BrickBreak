@@ -30,7 +30,7 @@ private:
     inline static Window* window = nullptr;
     inline static Game* gamePtr = nullptr;
 
-    inline static std::unordered_map<std::string, SpriteRenderer*> renderers;
+    inline static std::unordered_map<std::string, void*> renderers;
     inline static std::vector<Level*> levels;
 
     inline static int currentLevel = 0;

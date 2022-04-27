@@ -21,5 +21,5 @@ public:
     Object(const glm::vec2& pos, const glm::vec2& size, Texture* texture, float rotation = 0.0f, 
            const glm::vec4& color = glm::vec4(1.0f), const glm::vec2& velocity = glm::vec2(0.0f));
 
-    void render(SpriteRenderer& spriteRenderer);
+    void render(SpriteRenderer* spriteRenderer);
 };

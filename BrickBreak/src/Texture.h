@@ -11,6 +11,9 @@ public:
 
     void setInternalFormat(unsigned int internalFormat);
     void setImageFormat(unsigned int imageFormat);
+
+    inline const unsigned int getId() const { return m_Id; }
+
 private:
     unsigned int m_Id;
     unsigned int m_Width, m_Height;

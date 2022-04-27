@@ -36,11 +36,18 @@ void Level::load()
     // for(auto& x:tilesData) { for(auto& y:x) { printf("%d ", y); } printf("\n); }
 }
 
-void Level::render(SpriteRenderer& renderer)
+void Level::render(SpriteRenderer* renderer)
 {
     for(auto& brick: objects)
         if (!brick.destroyed)    
             brick.render(renderer);
+}
+
+void Level::render(BatchRenderer* renderer)
+{
+    for(auto& brick: objects)
+        if (!brick.destroyed)
+            renderer->submit(&brick);
 }
 
 void Level::init(std::vector<std::vector<unsigned int>>& tilesData, unsigned int lvlWidth, unsigned int lvlHeight)

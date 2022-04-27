@@ -1,6 +1,7 @@
 #include "Shader.h"
 
 #include <glad/glad.h>
+#include <stdexcept>
 #include "Utils.h"
 
 Shader::Shader(const char* vertPath, const char* fragPath)
@@ -23,7 +24,6 @@ Shader::Shader(const char* vertPath, const char* fragPath)
 		glGetProgramInfoLog(m_Id, sizeof(eLog), nullptr, eLog);
 		printf("Error linking program: '%s'\n", eLog);
 	}
-
 
     glValidateProgram(m_Id);
     glGetProgramiv(m_Id, GL_VALIDATE_STATUS, &result);
@@ -75,14 +75,34 @@ void Shader::unbind() const
     glUseProgram(0);
 }
 
+void Shader::setUniform1i(const char* uniform, int data)
+{
+    if (m_Cache.find(uniform) == m_Cache.end()) findUniformLocation(uniform);
+    glUniform1i(m_Cache[uniform], data);
+}
+
+void Shader::setUniform1iv(const char* uniform, int count, const int* data)
+{
+    if (m_Cache.find(uniform) == m_Cache.end()) findUniformLocation(uniform);
+    glUniform1iv(m_Cache[uniform], count, data);
+}
+
 void Shader::setUniform4f(const char* uniform, const glm::vec4& vec)
 {
+    if (m_Cache.find(uniform) == m_Cache.end()) findUniformLocation(uniform);
     glUniform4f(m_Cache[uniform], vec.x, vec.y, vec.z, vec.w);
 }
 
 void Shader::setUniformMat4(const char* uniform, const glm::mat4& mat)
 {
+    if (m_Cache.find(uniform) == m_Cache.end()) findUniformLocation(uniform);
     glUniformMatrix4fv(m_Cache[uniform], 1, false, &mat[0][0]);
+}
+
+void Shader::setUniformMat4(const char* uniform, unsigned int count, const float* mat)
+{
+    if (m_Cache.find(uniform) == m_Cache.end()) findUniformLocation(uniform);
+    glUniformMatrix4fv(m_Cache[uniform], count, false, mat);
 }
 
 uint32_t Shader::compileShader(unsigned int type, const char* shaderPath)
@@ -112,4 +132,17 @@ uint32_t Shader::compileShader(unsigned int type, const char* shaderPath)
     }
 
     return id;
+}
+
+int Shader::findUniformLocation(const char* uniform)
+{
+    int location = glGetUniformLocation(m_Id, uniform);
+    if (location == -1)
+    {
+        char errString[64];
+        sprintf(errString, "Uniform %s not found", uniform);
+        throw std::runtime_error(errString);
+    }
+    m_Cache[uniform] = location;
+    return  location;
 }
