@@ -149,6 +149,8 @@ void BatchRenderer::render()
         glBindTexture(GL_TEXTURE_2D, m_TextureSlots[i]);
     }
 
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     m_Shader->bind();
     m_Shader->setUniform1iv("uTextures", 10, slots);
     m_Shader->setUniformMat4("uModel", m_IndexCount, &m_Models[0][0][0]);

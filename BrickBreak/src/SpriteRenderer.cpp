@@ -56,8 +56,8 @@ SpriteRenderer::SpriteRenderer(Shader* shader)
     // glEnableVertexArrayAttrib(m_VAO, UV_ATTRIB_SLOT);
 
     glBindVertexArray(0);
-    // glBindBuffer(GL_ARRAY_BUFFER, 0);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 SpriteRenderer::~SpriteRenderer()
@@ -70,6 +70,7 @@ SpriteRenderer::~SpriteRenderer()
 void SpriteRenderer::drawSprite(Texture* texture, const glm::vec2& pos, const glm::vec2& size, 
                     float rotate, const glm::vec4& color)
 {
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     m_Shader->bind();
 
     glm::mat4 model = glm::mat4(1.0f);

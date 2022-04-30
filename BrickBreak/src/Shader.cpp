@@ -87,6 +87,12 @@ void Shader::setUniform1iv(const char* uniform, int count, const int* data)
     glUniform1iv(m_Cache[uniform], count, data);
 }
 
+void Shader::setUniform2f(const char* uniform, const glm::vec2& vec)
+{
+    if (m_Cache.find(uniform) == m_Cache.end()) findUniformLocation(uniform);
+    glUniform2f(m_Cache[uniform], vec.x, vec.y);
+}
+
 void Shader::setUniform4f(const char* uniform, const glm::vec4& vec)
 {
     if (m_Cache.find(uniform) == m_Cache.end()) findUniformLocation(uniform);

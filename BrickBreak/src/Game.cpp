@@ -19,6 +19,9 @@ void Game::loop(double delta)
 
     if (!levels[currentLevel]->isLoaded()) levels[currentLevel]->load();
     
+    particleGenerator->update(delta, ball, 2, glm::vec2(ball->radius / 2.0f));
+    particleGenerator->draw();
+
     renderer->begin();
     levels[currentLevel]->render(renderer);
 
@@ -33,6 +36,7 @@ void Game::loop(double delta)
     
     renderer->end();
     renderer->render();
+
     Game::processCollision();
 
     if (ball->pos.y >= HEIGHT) 
@@ -50,12 +54,14 @@ Game::Game()
     
     window = new Window(800.0f, 600.0f);
  
-    Shader* shader = ResourceManager::loadShader("shader/vert.glsl", "shader/frag.glsl", "basic");
-    shader = ResourceManager::loadShader("shader/batch_vert.glsl", "shader/batch_frag.glsl", "batch");
+    // Shader* shader = ResourceManager::loadShader("shader/vert.glsl", "shader/frag.glsl", "basic");
+    Shader* shader = ResourceManager::loadShader("shader/batch_vert.glsl", "shader/batch_frag.glsl", "batch");
+    Shader* particleShader = ResourceManager::loadShader("shader/particle_vert.glsl", "shader/particle_frag.glsl", "particle");
     ResourceManager::loadTexture("textures/Block.png", true, "block");
     ResourceManager::loadTexture("textures/SolidMetal.png", true, "solid_block");
     Texture* paddleTex = ResourceManager::loadTexture("textures/Paddle.png", true, "player");
     Texture* ballTex = ResourceManager::loadTexture("textures/Ball.png", true, "ball");
+    Texture* particleTex = ResourceManager::loadTexture("textures/Particle.png", true, "particle");
 
     // SpriteRenderer* spriteRenderer = new SpriteRenderer(ResourceManager::shaders["basic"]);
     BatchRenderer* batchRenderer = new BatchRenderer(ResourceManager::shaders["batch"]);
@@ -66,9 +72,14 @@ Game::Game()
     levels.push_back(new Level("levels/level1.lvl", WIDTH, HEIGHT / 2));
     levels[0]->load();
 
-    glm::mat4 proj = glm::ortho(0.0f, WIDTH, HEIGHT, 0.0f, -1.0f, 1.0f);
+    glm::mat4 proj = glm::ortho(0.0f, WIDTH, HEIGHT, 0.0f, -2.0f, 2.0f);
     shader->bind();
     shader->setUniformMat4("uProjection", proj);
+    particleShader->bind();
+    particleShader->setUniformMat4("uProjection", proj);
+    particleShader->unbind();
+
+    Game::particleGenerator = new ParticleGenerator(particleShader, particleTex, 500);
 
     glm::vec2 playerSize(100.0f, 20.0f);
     glm::vec2 playerPos(
@@ -193,6 +204,7 @@ Game::~Game()
     delete ball;
     for (auto& [k, v]: renderers) delete v;
     for (auto l: levels) delete l;
+    delete particleGenerator;
     ResourceManager::clear();
     delete window;
 }

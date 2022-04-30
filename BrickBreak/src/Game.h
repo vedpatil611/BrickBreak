@@ -4,6 +4,7 @@
 #include "Collision.h"
 #include "Level.h"
 #include "Object.h"
+#include "Particle.h"
 #include "Window.h"
 #include <string>
 #include <vector>
@@ -32,7 +33,7 @@ private:
 
     inline static std::unordered_map<std::string, Renderer*> renderers;
     inline static std::vector<Level*> levels;
-
+    inline static ParticleGenerator* particleGenerator;
     inline static int currentLevel = 0;
 
     static void processInput(double delta);

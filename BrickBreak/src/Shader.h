@@ -15,6 +15,7 @@ public:
 
     void setUniform1i(const char* uniform, int data);
     void setUniform1iv(const char* uniform, int count, const int* data);
+    void setUniform2f(const char* uniform, const glm::vec2& vec);
     void setUniform4f(const char* uniform, const glm::vec4& vec);
     void setUniformMat4(const char* uniform, const glm::mat4& mat);
     void setUniformMat4(const char* uniform, unsigned int count, const float* mat);

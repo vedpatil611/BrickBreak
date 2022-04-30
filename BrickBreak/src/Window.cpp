@@ -18,7 +18,6 @@ Window::Window(int width, int height)
     // gladLoadGL();
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Buffer size info
     int bufferWidth, bufferHeight;
