@@ -11,43 +11,6 @@ Game* Game::CreateGame()
     return gamePtr;
 }
 
-void Game::loop(double delta)
-{
-    window->clear();
-    // SpriteRenderer* spriteRenderer = (SpriteRenderer*) renderers["basic"];
-    BatchRenderer* renderer = (BatchRenderer*) renderers["batch"];
-
-    if (!levels[currentLevel]->isLoaded()) levels[currentLevel]->load();
-    
-    particleGenerator->update(delta, ball, 2, glm::vec2(ball->radius / 2.0f));
-    particleGenerator->draw();
-
-    renderer->begin();
-    levels[currentLevel]->render(renderer);
-
-    Game::processInput(delta);
-    
-    renderer->submit(player);
-    // player->render(spriteRenderer);
- 
-    ball->move(delta, WIDTH);
-    renderer->submit(ball);
-    // ball->render(spriteRenderer);
-    
-    renderer->end();
-    renderer->render();
-
-    Game::processCollision();
-
-    if (ball->pos.y >= HEIGHT) 
-    {
-        player->pos = glm::vec2(WIDTH / 2.0f - player->size.x / 2.0f, HEIGHT - player->size.y);
-        ball->reset(player->pos + glm::vec2(player->size.x / 2.0f - ball->radius, - ball->radius * 2.0f));
-    }
-
-    window->update();
-}
-
 Game::Game()
 {
     gamePtr = this;
@@ -93,6 +56,44 @@ Game::Game()
     const float BALL_RADIUS = 12.0f;
     glm::vec2 ballPos = playerPos + glm::vec2(playerSize.x / 2 - BALL_RADIUS, - BALL_RADIUS * 2.0f);
     ball = new Ball(ballPos, BALL_RADIUS, ballVelocity, ballTex);
+}
+
+void Game::loop(double delta)
+{
+    window->clear();
+    // SpriteRenderer* spriteRenderer = (SpriteRenderer*) renderers["basic"];
+    BatchRenderer* renderer = (BatchRenderer*) renderers["batch"];
+
+    if (!levels[currentLevel]->isLoaded()) levels[currentLevel]->load();
+    
+    particleGenerator->update(delta, ball, 1, glm::vec2(ball->radius / 2.0f));
+    particleGenerator->draw();
+    // if(GLenum err=glGetError()){printf("%d\n",err);exit(0);}
+
+    renderer->begin();
+    levels[currentLevel]->render(renderer);
+
+    Game::processInput(delta);
+    
+    renderer->submit(player);
+    // player->render(spriteRenderer);
+ 
+    ball->move(delta, WIDTH);
+    renderer->submit(ball);
+    // ball->render(spriteRenderer);
+    
+    renderer->end();
+    renderer->render();
+
+    Game::processCollision();
+
+    if (ball->pos.y >= HEIGHT) 
+    {
+        player->pos = glm::vec2(WIDTH / 2.0f - player->size.x / 2.0f, HEIGHT - player->size.y);
+        ball->reset(player->pos + glm::vec2(player->size.x / 2.0f - ball->radius, - ball->radius * 2.0f));
+    }
+
+    window->update();
 }
 
 void Game::processInput(double delta)
