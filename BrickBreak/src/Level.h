@@ -12,6 +12,7 @@ public:
 
     Level(const char* file, unsigned int levelWidth, unsigned int levelHeight);
     void load();
+    void unload();
 
     void render(SpriteRenderer* renderer);
     void render(BatchRenderer* renderer);

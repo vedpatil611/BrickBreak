@@ -36,6 +36,11 @@ void Level::load()
     // for(auto& x:tilesData) { for(auto& y:x) { printf("%d ", y); } printf("\n); }
 }
 
+void Level::unload()
+{
+    objects.clear();
+}
+
 void Level::render(SpriteRenderer* renderer)
 {
     for(auto& brick: objects)
