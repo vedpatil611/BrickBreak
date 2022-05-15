@@ -7,23 +7,31 @@
 struct Particle
 {
     glm::vec2 pos;
-    glm::vec2 velocity;
-    glm::vec4 color;
-    float lifeTime;
+    glm::vec2 initialVelocity, finalVelocity;
+    glm::vec2 velocityRandomnessMin, velocityRandomnessMax;
+    glm::vec4 intialColor, finalColor;
+    float life, lifeTime;
 
-    Particle(): pos(0.0f), velocity(0.0f), color(1.0f), lifeTime(0.0f) {}
+    // Color value is automatically calculated. Do not write value to this variable unless you know what you are doing
+    glm::vec4 color;
+
+    Particle(): pos(0.0f), initialVelocity(0.0f), finalVelocity(0.0f),
+        velocityRandomnessMin(0.0f), velocityRandomnessMax(0.0f),
+        intialColor(1.0f), finalColor(1.0f),
+        life(1.0f), lifeTime(1.0f) {}
 };
 
 class ParticleGenerator
 {
 public:
     ParticleGenerator(Shader* shader, Texture* texture, unsigned int amount);
+    ParticleGenerator(const Particle& particleInstance, Shader* shader, Texture* texture, unsigned int amount);
     ~ParticleGenerator();
 
     void update(double delta, Object* object, unsigned int newParticles, const glm::vec2& offset = { 0.0f, 0.0f });
     void draw();
 private:
-    const unsigned int MAX_PARTICLES = 50;
+    const unsigned int MAX_PARTICLES = 100;
     std::vector<Particle> m_Particles;
 
     struct VertexData
@@ -43,6 +51,7 @@ private:
     Shader* m_Shader = nullptr;
     Texture* m_Tex = nullptr;
 
+    void init();
     unsigned int findUnusedParticle();
     void respawnParticle(Particle& particle, Object* object, const glm::vec2& offset);
 };

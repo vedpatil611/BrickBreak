@@ -1,8 +1,93 @@
 #include "Particle.h"
+
+#include "Utils.h"
 #include <glad/glad.h>
+#include <glm/fwd.hpp>
 
 ParticleGenerator::ParticleGenerator(Shader* shader, Texture* texture, unsigned int amount)
     : m_Shader(shader), m_Tex(texture)
+{
+    init();    
+
+    // Filling up particle pool
+    m_Particles = std::vector<Particle>(MAX_PARTICLES, Particle());
+}
+
+ParticleGenerator::ParticleGenerator(const Particle& particleInstance, Shader* shader, Texture* texture, unsigned int amount)
+    : m_Shader(shader), m_Tex(texture)
+{
+    init();
+
+    // Filling up particle pool
+    m_Particles = std::vector<Particle>(MAX_PARTICLES, particleInstance);
+}
+
+ParticleGenerator::~ParticleGenerator()
+{
+    glDeleteVertexArrays(1, &m_VAO);
+    glDeleteBuffers(1, &m_VBO);
+    glDeleteBuffers(1, &m_IBO);
+}
+
+void ParticleGenerator::update(double delta, Object* object, unsigned int newParticles, const glm::vec2& offset)
+{
+    for (unsigned int i = 0; i < newParticles; ++i)
+    {
+        unsigned int unUsedParticle = findUnusedParticle();
+        respawnParticle(m_Particles[unUsedParticle], object, offset);
+    }
+    float dt = static_cast<float>(delta);
+
+    for (auto& particle: m_Particles)
+    {
+        if (particle.lifeTime > 0.0f)
+        {
+            float t = 1.0f - particle.lifeTime / particle.life;
+            auto velocity = Utils::lerp(particle.initialVelocity, particle.finalVelocity, t);
+            particle.lifeTime -= dt / 1000.0f;
+            particle.pos -= velocity * dt;
+            particle.color = Utils::lerp(particle.intialColor, particle.finalColor, t);
+        }
+    }
+}
+
+void ParticleGenerator::draw()
+{
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+
+    VertexData* data = (VertexData*) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+
+    for (Particle& particle: m_Particles)
+    {
+        if (particle.lifeTime > 0.0f)
+        {
+            for (int i = 0; i < 4; ++i)
+            {
+                data->pos = m_Vertices[i].pos;
+                data->uv = m_Vertices[i].uv;
+                data->offset = particle.pos;
+                data->color = particle.color;
+                ++data;
+            }
+        }
+    }
+
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+    // glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    m_Shader->bind();
+    
+    glActiveTexture(GL_TEXTURE0);
+    m_Tex->bind();
+    m_Shader->setUniform1i("uSprite", 0);
+
+    glBindVertexArray(m_VAO);
+    glDrawElements(GL_TRIANGLES, static_cast<int>(MAX_PARTICLES) * 6, GL_UNSIGNED_SHORT, nullptr);
+    glBindVertexArray(0);
+}
+
+void ParticleGenerator::init()
 {
     glGenVertexArrays(1, &m_VAO);
     glBindVertexArray(m_VAO);
@@ -45,72 +130,6 @@ ParticleGenerator::ParticleGenerator(Shader* shader, Texture* texture, unsigned 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    // Filling up particle pool
-    m_Particles = std::vector<Particle>(MAX_PARTICLES, Particle());
-}
-
-ParticleGenerator::~ParticleGenerator()
-{
-    glDeleteVertexArrays(1, &m_VAO);
-    glDeleteBuffers(1, &m_VBO);
-    glDeleteBuffers(1, &m_IBO);
-}
-
-void ParticleGenerator::update(double delta, Object* object, unsigned int newParticles, const glm::vec2& offset)
-{
-    for (unsigned int i = 0; i < newParticles; ++i)
-    {
-        int unUsedParticle = findUnusedParticle();
-        respawnParticle(m_Particles[unUsedParticle], object, offset);
-    }
-    float dt = static_cast<float>(delta);
-
-    for (auto& particle: m_Particles)
-    {
-        if (particle.lifeTime > 0.0f)
-        {
-            particle.lifeTime -= dt / 1000.0f;
-            particle.pos -= particle.velocity * dt;
-            particle.color.a -= dt / 500.0f;
-        }
-    }
-}
-
-void ParticleGenerator::draw()
-{
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-
-    VertexData* data = (VertexData*) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-
-    for (Particle& particle: m_Particles)
-    {
-        if (particle.lifeTime > 0.0f)
-        {
-            for (int i = 0; i < 4; ++i)
-            {
-                data->pos = m_Vertices[i].pos;
-                data->uv = m_Vertices[i].uv;
-                data->offset = particle.pos;
-                data->color = particle.color;
-                ++data;
-            }
-        }
-    }
-
-    glUnmapBuffer(GL_ARRAY_BUFFER);
-    // glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
-    m_Shader->bind();
-    
-    glActiveTexture(GL_TEXTURE0);
-    m_Tex->bind();
-    m_Shader->setUniform1i("uSprite", 0);
-
-    glBindVertexArray(m_VAO);
-    glDrawElements(GL_TRIANGLES, MAX_PARTICLES * 6, GL_UNSIGNED_SHORT, nullptr);
-    glBindVertexArray(0);
 }
 
 unsigned int ParticleGenerator::findUnusedParticle()
@@ -143,7 +162,18 @@ void ParticleGenerator::respawnParticle(Particle& particle, Object* object, cons
     float random = ((rand() % 100) - 50) / 10.0f;
     float rColor = 0.5f + ((rand() % 100) / 100.0f);
     particle.pos = object->pos + random + offset;
-    particle.color = glm::vec4(rColor, rColor, rColor, 1.0f);
-    particle.lifeTime = 1.0f;
-    particle.velocity = object->velocity * 0.1f;
+    particle.intialColor = glm::vec4(rColor, rColor, rColor, 1.0f);
+    particle.finalColor = glm::vec4(rColor, rColor, rColor, 0.0f);
+    particle.lifeTime = particle.life;
+    // particle.velocity = object->velocity * 0.1f;
+    particle.initialVelocity = object->velocity * 0.1f 
+        + glm::vec2(
+            Utils::randomFloat(particle.velocityRandomnessMin.x, particle.velocityRandomnessMax.x),
+            Utils::randomFloat(particle.velocityRandomnessMin.y, particle.velocityRandomnessMax.y)
+        );
+    particle.finalVelocity = object->velocity * 0.1f 
+        + glm::vec2(
+            Utils::randomFloat(particle.velocityRandomnessMin.x, particle.velocityRandomnessMax.x),
+            Utils::randomFloat(particle.velocityRandomnessMin.y, particle.velocityRandomnessMax.y)
+        );
 }

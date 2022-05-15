@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include "BatchRenderer.h"
+#include "Particle.h"
 #include "ResourceManager.h"
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -41,6 +42,8 @@ Game::Game()
     particleShader->bind();
     particleShader->setUniformMat4("uProjection", proj);
     particleShader->unbind();
+
+    // Particle particleInstance = Particle();
 
     Game::particleGenerator = new ParticleGenerator(particleShader, particleTex, 500);
 
