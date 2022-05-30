@@ -18,7 +18,7 @@ struct Particle
     Particle(): pos(0.0f), initialVelocity(0.0f), finalVelocity(0.0f),
         velocityRandomnessMin(0.0f), velocityRandomnessMax(0.0f),
         intialColor(1.0f), finalColor(1.0f),
-        life(1.0f), lifeTime(1.0f) {}
+        life(1.0f), lifeTime(0.0f) {}
 };
 
 class ParticleGenerator

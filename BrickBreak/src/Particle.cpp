@@ -2,7 +2,6 @@
 
 #include "Utils.h"
 #include <glad/glad.h>
-#include <glm/fwd.hpp>
 
 ParticleGenerator::ParticleGenerator(Shader* shader, Texture* texture, unsigned int amount)
     : m_Shader(shader), m_Tex(texture)
@@ -36,6 +35,7 @@ void ParticleGenerator::update(double delta, Object* object, unsigned int newPar
         unsigned int unUsedParticle = findUnusedParticle();
         respawnParticle(m_Particles[unUsedParticle], object, offset);
     }
+    
     float dt = static_cast<float>(delta);
 
     for (auto& particle: m_Particles)
