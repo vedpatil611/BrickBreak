@@ -8,14 +8,14 @@
 std::unordered_map<std::string, Shader*> ResourceManager::shaders;
 std::unordered_map<std::string, Texture*> ResourceManager::textures;
 
-Shader* ResourceManager::loadShader(const char* vertFile, const char* fragFile, std::string name)
+Shader* ResourceManager::loadShader(const char* vertFile, const char* fragFile, const std::string& name)
 {
     Shader* shader = new Shader(vertFile, fragFile);
     shaders.insert(std::make_pair(name, shader));
     return shader;
 }
 
-Texture* ResourceManager::loadTexture(const char* path, bool alpha, std::string name)
+Texture* ResourceManager::loadTexture(const char* path, bool alpha, const std::string& name)
 {
     Texture* tex = new Texture();
     if (alpha)
@@ -24,7 +24,7 @@ Texture* ResourceManager::loadTexture(const char* path, bool alpha, std::string 
         tex->setImageFormat(GL_RGBA);
     }
 
-    int width, height, channels;
+    int width = 0, height = 0, channels = 0;
     unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
 
     tex->generate(width, height, data);

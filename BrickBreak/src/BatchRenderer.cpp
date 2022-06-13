@@ -89,7 +89,7 @@ void BatchRenderer::submit(Object* object)
                 render();
                 begin();
             }
-            m_TextureSlots.push_back(tid);
+            m_TextureSlots.push_back(static_cast<int>(tid));
             textureSlot = static_cast<float>(m_TextureSlots.size() - 1);
         }
     }
@@ -107,28 +107,28 @@ void BatchRenderer::submit(Object* object)
     m_Buffer->uv = vertices[0].uv;
     m_Buffer->color = color;
     m_Buffer->tid = textureSlot;
-    m_Buffer->index = m_IndexCount;
+    m_Buffer->index = static_cast<float>(m_IndexCount);
     ++m_Buffer;
 
     m_Buffer->pos = vertices[1].pos;
     m_Buffer->uv = vertices[1].uv;
     m_Buffer->color = color;
     m_Buffer->tid = textureSlot;
-    m_Buffer->index = m_IndexCount;
+    m_Buffer->index = static_cast<float>(m_IndexCount);
     ++m_Buffer;
     
     m_Buffer->pos = vertices[2].pos;
     m_Buffer->uv = vertices[2].uv;
     m_Buffer->color = color;
     m_Buffer->tid = textureSlot;
-    m_Buffer->index = m_IndexCount;
+    m_Buffer->index = static_cast<float>(m_IndexCount);
     ++m_Buffer;
 
     m_Buffer->pos = vertices[3].pos;
     m_Buffer->uv = vertices[3].uv;
     m_Buffer->color = color;
     m_Buffer->tid = textureSlot;
-    m_Buffer->index = m_IndexCount;
+    m_Buffer->index = static_cast<float>(m_IndexCount);
     ++m_Buffer;
 
     ++m_IndexCount;

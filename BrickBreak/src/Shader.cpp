@@ -105,7 +105,7 @@ void Shader::setUniformMat4(const char* uniform, const glm::mat4& mat)
     glUniformMatrix4fv(m_Cache[uniform], 1, false, &mat[0][0]);
 }
 
-void Shader::setUniformMat4(const char* uniform, unsigned int count, const float* mat)
+void Shader::setUniformMat4(const char* uniform, int count, const float* mat)
 {
     if (m_Cache.find(uniform) == m_Cache.end()) findUniformLocation(uniform);
     glUniformMatrix4fv(m_Cache[uniform], count, false, mat);

@@ -159,8 +159,8 @@ unsigned int ParticleGenerator::findUnusedParticle()
 
 void ParticleGenerator::respawnParticle(Particle& particle, Object* object, const glm::vec2& offset)
 {
-    float random = ((rand() % 100) - 50) / 10.0f;
-    float rColor = 0.5f + ((rand() % 100) / 100.0f);
+    float random = static_cast<float>((rand() % 100) - 50) / 10.0f;
+    float rColor = 0.5f + (static_cast<float>(rand() % 100) / 100.0f);
     particle.pos = object->pos + random + offset;
     particle.intialColor = glm::vec4(rColor, rColor, rColor, 1.0f);
     particle.finalColor = glm::vec4(rColor, rColor, rColor, 0.0f);

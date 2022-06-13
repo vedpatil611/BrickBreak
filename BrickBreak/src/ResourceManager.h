@@ -11,8 +11,8 @@ public:
     static std::unordered_map<std::string, Shader*> shaders;
     static std::unordered_map<std::string, Texture*> textures;
 
-    static Shader* loadShader(const char* vertFile, const char* fragFile, std::string name);
-    static Texture*loadTexture(const char* path, bool alpha, std::string name);
+    static Shader* loadShader(const char* vertFile, const char* fragFile, const std::string& name);
+    static Texture*loadTexture(const char* path, bool alpha, const std::string& name);
 
     static void clear();
 };

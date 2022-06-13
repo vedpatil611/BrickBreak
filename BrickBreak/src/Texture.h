@@ -6,22 +6,22 @@ public:
     Texture();
     ~Texture();
 
-    void generate(unsigned int width, unsigned int height, unsigned char* data);
+    void generate(int width, int height, unsigned char* data);
     void bind() const;
 
-    void setInternalFormat(unsigned int internalFormat);
-    void setImageFormat(unsigned int imageFormat);
+    void setInternalFormat(int internalFormat);
+    void setImageFormat(int imageFormat);
 
     inline const unsigned int getId() const { return m_Id; }
 
 private:
     unsigned int m_Id;
-    unsigned int m_Width, m_Height;
+    int m_Width, m_Height;
     // Format of texture object
-    unsigned int m_InternalFormat;
+    int m_InternalFormat;
     // Format of image to be loaded
-    unsigned int m_ImageFormat;
+    int m_ImageFormat;
 
-    unsigned int m_WrapS, m_WrapT;
-    unsigned int m_FilterMin, m_FilterMax;
+    int m_WrapS, m_WrapT;
+    int m_FilterMin, m_FilterMax;
 };

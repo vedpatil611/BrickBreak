@@ -101,6 +101,7 @@ void Game::loop(double delta)
 
 void Game::processInput(double delta)
 {
+    float dt = static_cast<float>(delta);
     const auto& input = window->getInputs();
     float velocity = 500.0f;
 
@@ -108,16 +109,16 @@ void Game::processInput(double delta)
     {
         if (player->pos.x >= 0.0f) 
         {
-            player->pos.x -= velocity * delta;
-            if (ball->stuck) ball->pos.x -= velocity * delta;
+            player->pos.x -= velocity * dt;
+            if (ball->stuck) ball->pos.x -= velocity * dt;
         }
     }
     else if (input[GLFW_KEY_RIGHT])
     {
         if (player->pos.x <= WIDTH - player->size.x) 
         {
-            player->pos.x += velocity * delta;
-            if (ball->stuck) ball->pos.x += velocity * delta;
+            player->pos.x += velocity * dt;
+            if (ball->stuck) ball->pos.x += velocity * dt;
         }
     }
 

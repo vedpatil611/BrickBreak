@@ -16,7 +16,7 @@ Texture::~Texture()
     glDeleteTextures(1, &m_Id);
 }
 
-void Texture::generate(unsigned int width, unsigned int height, unsigned char* data)
+void Texture::generate(int width, int height, unsigned char* data)
 {
     m_Width = width;
     m_Height = height;
@@ -37,12 +37,12 @@ void Texture::bind() const
     glBindTexture(GL_TEXTURE_2D, m_Id);
 }
 
-void Texture::setInternalFormat(unsigned int internalFormat)
+void Texture::setInternalFormat(int internalFormat)
 {
     m_InternalFormat = internalFormat;
 }
 
-void Texture::setImageFormat(unsigned int imageFormat)
+void Texture::setImageFormat(int imageFormat)
 {
     m_ImageFormat = imageFormat;
 }

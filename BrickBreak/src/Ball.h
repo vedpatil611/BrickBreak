@@ -11,7 +11,7 @@ public:
     Ball();
     Ball(const glm::vec2& pos, float radius, glm::vec2 velocity, Texture* texture);
 
-    glm::vec2 move(double delta, unsigned int windowWidth);
+    glm::vec2 move(double delta, float windowWidth);
     void reset(const glm::vec2& pos);
     void reset(const glm::vec2& pos, const glm::vec2& velocity);
 };

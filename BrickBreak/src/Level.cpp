@@ -5,7 +5,7 @@
 #include <sstream>
 #include "ResourceManager.h"
 
-Level::Level(const char* file, unsigned int width, unsigned int height)
+Level::Level(const char* file, float width, float height)
     :m_File(file), m_Width(width), m_Height(height) {}
 
 void Level::load()
@@ -55,19 +55,19 @@ void Level::render(BatchRenderer* renderer)
             renderer->submit(&brick);
 }
 
-void Level::init(std::vector<std::vector<unsigned int>>& tilesData, unsigned int lvlWidth, unsigned int lvlHeight)
+void Level::init(std::vector<std::vector<unsigned int>>& tilesData, float lvlWidth, float lvlHeight)
 {
     unsigned int height = tilesData.size();
     unsigned int width = tilesData[0].size();
 
-    float unitWidth = static_cast<float>(lvlWidth) / width;
-    float unitHeight = static_cast<float>(lvlHeight) / height;
+    float unitWidth = lvlWidth / static_cast<float>(width);
+    float unitHeight = lvlHeight / static_cast<float>(height);
 
     for (unsigned int y = 0; y < height; ++y)
     {
         for (unsigned int x = 0; x < width; ++x)
         {
-            glm::vec2 pos(unitWidth * x, unitHeight * y);
+            glm::vec2 pos(unitWidth * static_cast<float>(x), unitHeight * static_cast<float>(y));
             glm::vec2 size(unitWidth, unitHeight);
             if (tilesData[y][x] == 1)
             {
