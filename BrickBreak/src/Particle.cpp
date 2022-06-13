@@ -44,7 +44,7 @@ void ParticleGenerator::update(double delta, Object* object, unsigned int newPar
         {
             float t = 1.0f - particle.lifeTime / particle.life;
             auto velocity = Utils::lerp(particle.initialVelocity, particle.finalVelocity, t);
-            particle.lifeTime -= dt / 1000.0f;
+            particle.lifeTime -= dt;
             particle.pos -= velocity * dt;
             particle.color = Utils::lerp(particle.intialColor, particle.finalColor, t);
         }

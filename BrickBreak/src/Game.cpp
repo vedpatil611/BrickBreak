@@ -55,7 +55,7 @@ Game::Game()
     // float velocity = 10.0f;
     player = new Object(playerPos, playerSize, paddleTex);
 
-    const glm::vec2 ballVelocity(0.3f, -0.3f);
+    const glm::vec2 ballVelocity(300.0f, -300.0f);
     const float BALL_RADIUS = 12.0f;
     glm::vec2 ballPos = playerPos + glm::vec2(playerSize.x / 2 - BALL_RADIUS, - BALL_RADIUS * 2.0f);
     ball = new Ball(ballPos, BALL_RADIUS, ballVelocity, ballTex);
@@ -102,7 +102,7 @@ void Game::loop(double delta)
 void Game::processInput(double delta)
 {
     const auto& input = window->getInputs();
-    float velocity = 0.5f;
+    float velocity = 500.0f;
 
     if (input[GLFW_KEY_LEFT])
     {

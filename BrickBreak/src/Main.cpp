@@ -12,7 +12,7 @@ int main()
     while (!window->shouldClose()) 
     {
         auto now = std::chrono::high_resolution_clock::now();
-        double deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count();
+        double deltaTime = static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count()) / 1000.0;
         last = now;
         game->loop(deltaTime);
         // printf("%lf\n", deltaTime);
